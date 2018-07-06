@@ -8,16 +8,14 @@
 
     <TextView
         android:id="@+id/TV1"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="24dp"
-        android:layout_marginLeft="24dp"
-        android:layout_marginRight="24dp"
+        android:layout_width="152dp"
+        android:layout_height="38dp"
+        android:layout_marginEnd="8dp"
         android:layout_marginStart="24dp"
         android:layout_marginTop="8dp"
+        android:gravity="center"
         android:textSize="14sp"
         android:textStyle="italic"
-        android:gravity="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -38,20 +36,18 @@
 
     <TextView
         android:id="@+id/TV2"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_width="141dp"
+        android:layout_height="244dp"
         android:layout_marginBottom="8dp"
-        android:layout_marginEnd="24dp"
-        android:layout_marginLeft="24dp"
-        android:layout_marginRight="24dp"
+        android:layout_marginEnd="8dp"
         android:layout_marginStart="24dp"
         android:layout_marginTop="8dp"
         android:textSize="14sp"
         app:layout_constraintBottom_toTopOf="@+id/TV3"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintEnd_toStartOf="@+id/img_compass"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/TV1" />
+        app:layout_constraintTop_toBottomOf="@+id/TV1"
+        app:layout_constraintVertical_bias="0.607" />
 
     <TextView
         android:id="@+id/TV3"
@@ -67,4 +63,16 @@
         app:layout_constraintBottom_toTopOf="@+id/startStop"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageView
+        android:id="@+id/img_compass"
+        android:layout_width="176dp"
+        android:layout_height="258dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/startStop"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/compass" />
 </android.support.constraint.ConstraintLayout>

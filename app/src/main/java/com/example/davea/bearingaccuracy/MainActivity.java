@@ -4,6 +4,8 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.hardware.GeomagneticField;
+import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -15,6 +17,7 @@ import android.os.Bundle;
 import android.util.Size;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,11 +33,12 @@ public class MainActivity extends AppCompatActivity {
     TextView TV1, TV2, TV3;
     Button startStop;   //start/stop button for pausing/resuming data collection
 
+    ImageView compass_img;
     //Location:
     public Location currentLocation;
     static LocationManager locationManager;
     static LocationListener locationListener;
-
+    GeomagneticField geomagneticField;
     //Time:
     //create simple date format to show just 12hr time
     SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm:ss aa");
@@ -50,8 +54,8 @@ public class MainActivity extends AppCompatActivity {
     boolean setFirstSignalTime = false; //true if firstSignalTime has been set for the session
     String startTime;   //time that Start button is pressed to start program
     long firstSignalTime = 0;   //time that first GPS signal is received
-    Float bearing, bearingAccuracyDegrees;
-
+    Float bearing, bearingAccuracyDegrees,bearingDeclination;
+    Criteria criteria;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,7 +103,16 @@ public class MainActivity extends AppCompatActivity {
         if(setInterval == false) {
             startActivity(new Intent(getApplicationContext(), GetInterval.class));
         }
-
+        compass_img = (ImageView) findViewById(R.id.img_compass);
+        criteria=new Criteria();
+        criteria.setAccuracy(Criteria.ACCURACY_FINE);
+        criteria.setPowerRequirement(Criteria.POWER_HIGH);
+        criteria.setAltitudeRequired(true);
+        criteria.setSpeedRequired(false);
+        criteria.setCostAllowed(true);
+        criteria.setBearingRequired(true);
+        criteria.setHorizontalAccuracy(Criteria.ACCURACY_HIGH);
+        criteria.setVerticalAccuracy(Criteria.ACCURACY_HIGH);
         TV1 = findViewById(R.id.TV1);
         TV1.setText("Running\n");
         TV2 = findViewById(R.id.TV2);
@@ -118,6 +131,12 @@ public class MainActivity extends AppCompatActivity {
                 public void onLocationChanged(Location location) {
                     //when location changes, display accuracy of that reading
                     currentLocation = location;
+                    geomagneticField = new GeomagneticField(
+                            Double.valueOf(location.getLatitude()).floatValue(),
+                            Double.valueOf(location.getLongitude()).floatValue(),
+                            Double.valueOf(location.getAltitude()).floatValue(),
+                            System.currentTimeMillis()
+                    );
                     accuracy();
                 }
 
@@ -153,12 +172,12 @@ public class MainActivity extends AppCompatActivity {
                     //once permission is granted, set up location listener
                     //updating every UPDATE_INTERVAL milliseconds, regardless of distance change
                     else
-                        locationManager.requestLocationUpdates("gps", UPDATE_INTERVAL, 0, locationListener);
+                        locationManager.requestLocationUpdates(locationManager.getBestProvider(criteria,true), UPDATE_INTERVAL, 0, locationListener);
                 } else
-                    locationManager.requestLocationUpdates("gps", UPDATE_INTERVAL, 0, locationListener);
+                    locationManager.requestLocationUpdates(locationManager.getBestProvider(criteria,true), UPDATE_INTERVAL, 0, locationListener);
             } else {
                 assert locationManager != null;
-                locationManager.requestLocationUpdates("gps", UPDATE_INTERVAL, 0, locationListener);
+                locationManager.requestLocationUpdates(locationManager.getBestProvider(criteria,true), UPDATE_INTERVAL, 0, locationListener);
             }
         }
 
@@ -172,20 +191,22 @@ public class MainActivity extends AppCompatActivity {
         }
 
         bearing = currentLocation.getBearing();
-
+        bearing+=geomagneticField.getDeclination();
         //display data
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             bearingAccuracyDegrees = currentLocation.getBearingAccuracyDegrees();
             //print accuracy value on screen along with coordinates and start time
-            TV2.setText("Start Time: " + startTime + "\nBearing: " + bearing + "\u00b0" + "\nBearing Accuracy: "
+            TV2.setText("Start Time: " + startTime + "\nBearing: " + bearing + "\u00b0"+ "\nMagnetic Declination: " + geomagneticField.getDeclination() + "\u00b0"+ "\nBearing Accuracy: "
                     + bearingAccuracyDegrees + "\u00b0" + "\nFirst GPS Signal: " + dateFormat.format(firstSignalTime) + "\nNumber of readings: " + numDataPoints);
         }
-        else{
-            TV2.setText("Start Time: " + startTime + "\nBearing: " + bearing + "\u00b0" + "\nFirst GPS Signal: "
-                    + dateFormat.format(firstSignalTime) + "\nNumber of readings: " + numDataPoints + "\n\n[Bearing Accuracy is only available for Android Oreo 8.0 and beyond]");
-        }
+//        else{
+//            TV2.setText("Start Time: " + startTime + "\nBearing: " + bearing + "\u00b0" + "\nFirst GPS Signal: "
+//                    + dateFormat.format(firstSignalTime) + "\nNumber of readings: " + numDataPoints + "\n\n[Bearing Accuracy is only available for Android Oreo 8.0 and beyond]");
+//        }
 
         //set compass values:
+        compass_img.setRotation(-bearing);
+
         if(bearing <= 22.5 || bearing >= 337.5) {
             TV3.setText("N");
         }
