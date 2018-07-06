@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Bearing Accuracy</string>
+    <string name="start_stop">Start/Stop</string>
+</resources>
