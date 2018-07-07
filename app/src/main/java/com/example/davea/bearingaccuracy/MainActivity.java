@@ -137,6 +137,7 @@ public class MainActivity extends AppCompatActivity {
                             Double.valueOf(location.getAltitude()).floatValue(),
                             System.currentTimeMillis()
                     );
+                    if(location.getAccuracy()<=4)
                     accuracy();
                 }
 

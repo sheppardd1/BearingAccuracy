@@ -74,5 +74,16 @@
         app:layout_constraintBottom_toTopOf="@+id/startStop"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.432"
         app:srcCompat="@drawable/compass" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="15dp"
+        android:layout_height="7dp"
+        android:layout_marginEnd="89dp"
+        android:layout_marginTop="36dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/img_compass"
+        app:srcCompat="@drawable/red_arrow_png" />
 </android.support.constraint.ConstraintLayout>
