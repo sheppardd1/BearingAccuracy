@@ -33,11 +33,13 @@ public class MainActivity extends AppCompatActivity {
     TextView TV1, TV2, TV3;
     Button startStop;   //start/stop button for pausing/resuming data collection
 
+    //image of compass
     ImageView compass_img;
-    //Location:
+    //Location stuff:
     public Location currentLocation;
     static LocationManager locationManager;
     static LocationListener locationListener;
+    //magnetic field:
     GeomagneticField geomagneticField;
     //Time:
     //create simple date format to show just 12hr time
@@ -54,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
     boolean setFirstSignalTime = false; //true if firstSignalTime has been set for the session
     String startTime;   //time that Start button is pressed to start program
     long firstSignalTime = 0;   //time that first GPS signal is received
-    Float bearing, bearingAccuracyDegrees,bearingDeclination;
+    Float bearing, bearingAccuracyDegrees,bearingDeclination;   //bearing, bearing accuracy, declination (used for converting magnetic North to true North)
     Criteria criteria;
 
     @Override
