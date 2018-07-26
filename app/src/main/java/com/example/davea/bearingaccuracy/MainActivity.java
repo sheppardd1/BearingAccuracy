@@ -104,6 +104,8 @@ public class MainActivity extends AppCompatActivity {
             startActivity(new Intent(getApplicationContext(), GetInterval.class));
         }
         compass_img = (ImageView) findViewById(R.id.img_compass);
+        
+        //set criteria so GPS accuracy is optimal:
         criteria=new Criteria();
         criteria.setAccuracy(Criteria.ACCURACY_FINE);
         criteria.setPowerRequirement(Criteria.POWER_HIGH);
@@ -113,11 +115,15 @@ public class MainActivity extends AppCompatActivity {
         criteria.setBearingRequired(true);
         criteria.setHorizontalAccuracy(Criteria.ACCURACY_HIGH);
         criteria.setVerticalAccuracy(Criteria.ACCURACY_HIGH);
+        
+        //set up UI
         TV1 = findViewById(R.id.TV1);
         TV1.setText("Running\n");
         TV2 = findViewById(R.id.TV2);
         TV3 = findViewById(R.id.TV3);
         startStop = findViewById(R.id.startStop);
+        
+        //set up location manager and set variables to null
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         bearing = bearingAccuracyDegrees = null;
     }
@@ -125,13 +131,13 @@ public class MainActivity extends AppCompatActivity {
     public void locationDetails(){
         if(setInterval) {   //ensures that interval has been set
             final int UPDATE_INTERVAL = interval;   //set UPDATE_INTERVAL to user-specified value
-            startTime = dateFormat.format(System.currentTimeMillis());
+            startTime = dateFormat.format(System.currentTimeMillis());  //set time that program starts to request bearing
             locationListener = new LocationListener() {
                 @Override
                 public void onLocationChanged(Location location) {
                     //when location changes, display accuracy of that reading
                     currentLocation = location;
-                    geomagneticField = new GeomagneticField(
+                    geomagneticField = new GeomagneticField(    //get lat, lng, altitude
                             Double.valueOf(location.getLatitude()).floatValue(),
                             Double.valueOf(location.getLongitude()).floatValue(),
                             Double.valueOf(location.getAltitude()).floatValue(),
@@ -152,12 +158,12 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 @Override
-                public void onProviderDisabled(String provider) {
+                public void onProviderDisabled(String provider) {   //if permissions are not given, say so
                     TV1.setText("GPS permissions have been denied.\nNeed GPS permissions for app to function.");
                 }
             };
 
-            if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) { //if GPS not available, say so
                 Toast.makeText(this, "GPS not available", Toast.LENGTH_LONG);
             }
 
@@ -190,11 +196,13 @@ public class MainActivity extends AppCompatActivity {
             firstSignalTime = System.currentTimeMillis();
             setFirstSignalTime = true;
         }
-
+        //get bearing
         bearing = currentLocation.getBearing();
+        //convert magnetic north reading to true north reading
         bearing+=geomagneticField.getDeclination();
         //display data
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            //get accuracy reading of bearing
             bearingAccuracyDegrees = currentLocation.getBearingAccuracyDegrees();
             //print accuracy value on screen along with coordinates and start time
             TV2.setText("Start Time: " + startTime + "\nBearing: " + bearing + "\u00b0"+ "\nMagnetic Declination: " + geomagneticField.getDeclination() + "\u00b0"+ "\nBearing Accuracy: "
@@ -208,6 +216,7 @@ public class MainActivity extends AppCompatActivity {
         //set compass values:
         compass_img.setRotation(-bearing);
 
+        //display cardinal direction (N, E, S, W, etc) based on bearing angle
         if(bearing <= 22.5 || bearing >= 337.5) {
             TV3.setText("N");
         }
@@ -236,7 +245,7 @@ public class MainActivity extends AppCompatActivity {
             TV3.setText("Error");
         }
 
-        ++numDataPoints;
+        ++numDataPoints;    //increment the number of data points read
     }
 
 
