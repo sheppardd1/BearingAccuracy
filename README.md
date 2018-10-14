@@ -8,3 +8,6 @@ Desinged to test getBeearing() funtion in Android as well as it's accuracy readi
 ## Use
 - When starting, user must enter update interval (rate at which GPS signal is updated)
 - When running, the app has a start/stop button to pause and resume the program
+## Notes
+- Created by David Sheppard
+- Created: July 2018 for integration into BetterNavigation App designed for blind navigation
