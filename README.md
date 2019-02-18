@@ -1,6 +1,6 @@
 # BearingAccuracy - Android App
 ## Purpose
-Desinged to test getBeearing() funtion in Android as well as it's accuracy reading (Android 8.0+ only).
+Desinged to test getBearing() funtion in Android as well as it's accuracy reading (Android 8.0+ only).
 ## Function
 - Gets direction travelled using getBearing() function
 - Displays the user's direction in relation to magnetic north
